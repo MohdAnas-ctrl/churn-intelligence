@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Churn Intelligence | Customer Retention Analytics</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f4ef;--card:#fff;--tx:#14213d;--mut:#6b7280;--bd:#e7e2d6;--gold:#a9822f;--hd:#14213d;--hi:#b4372f;--md:#c98a14;--lo:#2f7d57;--sh:0 1px 2px rgba(20,33,61,.05),0 8px 24px rgba(20,33,61,.06);--soft:#faf8f3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#141d31;--tx:#eceff5;--mut:#98a3b8;--bd:#25314a;--gold:#d9b36c;--hd:#0f1a30;--sh:0 8px 24px rgba(0,0,0,.35);--soft:#101a2e}}
+:root[data-theme="dark"]{--bg:#0b1220;--card:#141d31;--tx:#eceff5;--mut:#98a3b8;--bd:#25314a;--gold:#d9b36c;--hd:#0f1a30;--sh:0 8px 24px rgba(0,0,0,.35);--soft:#101a2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1040px;margin:0 auto;padding:0 16px}
+header{background:var(--hd);color:#fff;border-bottom:3px solid var(--gold)}
+header .w{display:flex;align-items:center;gap:14px;padding:22px 16px}
+header h1{font:700 24px/1.1 "Playfair Display",Georgia,serif;margin:0;letter-spacing:.3px}
+header p{margin:3px 0 0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#d9b36c}
+main{padding:22px 16px 10px}.intro{color:var(--mut);max-width:720px;margin:0 0 20px}
+.g{display:grid;gap:18px;grid-template-columns:1fr}@media(min-width:820px){.g{grid-template-columns:1.15fr .85fr}}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px;box-shadow:var(--sh);margin-bottom:18px}.g .c{margin-bottom:0}
+.c h2{font:600 19px "Playfair Display",Georgia,serif;margin:0 0 4px}.c .s{color:var(--mut);font-size:13px;margin:0 0 16px}
+.c h2:after{content:"";display:block;width:34px;height:2px;background:var(--gold);margin-top:7px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;font-size:11.5px;font-weight:500;color:var(--mut);gap:5px;letter-spacing:.03em;text-transform:uppercase}
+input,select{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;color:var(--tx);background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:10px;width:100%;outline:none}
+input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(169,130,47,.18)}select:disabled{opacity:.5}
+.b{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+button{font:500 13px Inter,system-ui,sans-serif;border:1px solid var(--bd);background:var(--soft);color:var(--tx);padding:10px 14px;border-radius:10px;cursor:pointer}
+button:hover{border-color:var(--gold)}button.p{background:var(--hd);color:#fff;border-color:var(--hd);font-weight:600;letter-spacing:.04em}
+.gauge{width:100%;max-width:300px;display:block;margin:4px auto 0}.gauge text{fill:var(--tx)}
+.pct{font:700 38px "Playfair Display",Georgia,serif}.cap{font-size:9px;fill:var(--mut)!important;letter-spacing:.14em;text-transform:uppercase}
+.rc{text-align:center}.tag{display:inline-block;padding:5px 18px;border-radius:99px;color:#fff;font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.leg{display:flex;justify-content:center;gap:14px;font-size:11px;color:var(--mut);margin-top:16px;flex-wrap:wrap}.leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.kp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;text-align:left}.kp div{background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.kp small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.kp b{font-size:14px}
+.sum{background:var(--soft);border-left:3px solid var(--gold);border-radius:6px;padding:14px 16px;margin:0 0 16px}
+.fr{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-top:1px solid var(--bd)}
+.ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px}
+.fr h3{margin:0;font-size:14.5px}.fr p{margin:3px 0 0;font-size:13.5px;color:var(--mut)}
+.ch{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid;white-space:nowrap}
+.pl{display:grid;gap:14px;grid-template-columns:1fr}@media(min-width:820px){.pl{grid-template-columns:1fr 1fr}}
+.pl h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 6px}
+.it{display:flex;gap:10px;padding:11px 0;border-top:1px solid var(--bd)}.it u{flex:none;width:22px;height:22px;border-radius:50%;background:var(--hd);color:#fff;text-decoration:none;font-size:11px;font-weight:600;display:grid;place-items:center;margin-top:2px}
+.it b{display:block;font-size:14px}.it span{font-size:13.5px;color:var(--mut)}
+.banner{border-radius:10px;padding:11px 14px;margin-bottom:12px;font-size:14px;font-weight:500;border:1px solid var(--bd);background:var(--soft)}
+.note{font-size:12px;color:var(--mut);margin:4px 0 18px}
+footer{border-top:1px solid var(--bd);text-align:center;padding:22px 16px 30px;color:var(--mut);font-size:13px}
+footer b{font-family:"Playfair Display",Georgia,serif;font-size:16px;color:var(--tx);letter-spacing:.3px}
+</style></head><body>
+<header><div class="w">
+<svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="none" stroke="#d9b36c" stroke-width="1.6"/><path d="M8 27 15 19 21 24 32 11" fill="none" stroke="#d9b36c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="11" r="2.6" fill="#d9b36c"/></svg>
+<div><h1>Churn Intelligence</h1><p>Customer retention analytics</p></div></div></header>
+<main class="w">
+<p class="intro">Enter a customer profile to estimate the likelihood of churn, understand exactly what is driving it, and receive a tailored plan to strengthen loyalty. Predictions are computed privately in your browser.</p>
+<div class="g">
+<section class="c"><h2>Customer profile</h2><p class="s">Provide the account details below. Results update instantly.</p><div class="f">
+<label>Tenure (months)<input id="tenure" type="number" min="0" max="120" value="5"></label>
+<label>Monthly charges<div style="display:flex;gap:6px"><select id="cur" style="width:92px;flex:none"><option value="$">$ USD</option><option value="₹">₹ INR</option></select><input id="monthly" type="number" min="0" step="0.01" value="85"></div></label>
+<label id="rl" style="display:none">Exchange rate (₹ per $1)<input id="rate" type="number" min="1" step="0.01" value="88"></label>
+<label>Contract<select id="contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></label>
+<label>Internet service<select id="internet"><option>Fiber optic</option><option>DSL</option><option>No</option></select></label>
+<label>Online security<select id="sec"><option>No</option><option>Yes</option></select></label>
+<label>Online backup<select id="backup"><option>No</option><option>Yes</option></select></label>
+<label>Tech support<select id="support"><option>No</option><option>Yes</option></select></label>
+<label>Streaming TV<select id="stream"><option>No</option><option>Yes</option></select></label>
+<label>Payment method<select id="pay"><option>Electronic check</option><option>Mailed check</option><option>Bank transfer</option><option>Credit card</option><option>UPI</option></select></label>
+<label>Paperless billing<select id="paper"><option>Yes</option><option>No</option></select></label>
+<label>Senior citizen<select id="senior"><option value="0">No</option><option value="1">Yes</option></select></label>
+<label>Gender<select id="gender"><option>Male</option><option>Female</option></select></label>
+</div><div class="b"><button class="p" id="go">Analyse customer</button><button id="p1">Sample: at-risk</button><button id="p2">Sample: loyal</button></div></section>
+<section class="c rc"><h2 style="text-align:left">Churn risk</h2><p class="s" style="text-align:left">Estimated probability of leaving.</p>
+<svg class="gauge" viewBox="0 0 200 124"><path d="M10 100A90 90 0 0 1 190 100" fill="none" stroke="var(--bd)" stroke-width="14" stroke-linecap="round"/><path id="arc" d="M10 100A90 90 0 0 1 190 100" fill="none" stroke="var(--mut)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 283" style="transition:stroke-dasharray .5s"/><text id="pct" class="pct" x="100" y="96" text-anchor="middle">0%</text><text class="cap" x="100" y="118" text-anchor="middle">churn probability</text></svg>
+<div class="tag" id="tag" style="background:var(--mut)">Awaiting data</div>
+<div class="kp"><div><small>Population average</small><b>about 32%</b></div><div><small>vs. average</small><b id="vs">-</b></div></div>
+<div class="leg"><span><i style="background:var(--lo)"></i>Low &lt; 30%</span><span><i style="background:var(--md)"></i>Medium 30-60%</span><span><i style="background:var(--hi)"></i>High &ge; 60%</span></div></section>
+</div>
+<section class="c" style="margin-top:18px"><h2>Detailed reasoning</h2><p class="s">What the model sees in this profile, ranked by influence.</p><p class="sum" id="sum"></p><div id="why"></div></section>
+<section class="c"><h2>Customer loyalty &amp; retention plan</h2><p class="s">Recommended actions based on the drivers identified above.</p><div class="banner" id="ban"></div><div class="pl"><div><h3>Priority actions</h3><div id="act"></div></div><div><h3>Long-term loyalty programme</h3><div id="long"></div></div></div></section>
+<p class="note">The model (Logistic Regression) was trained on synthetic Telco-style data in US dollars, so retrain it on real customer data before production use. INR amounts are converted with the exchange rate shown. UPI was not a category in the training data, so it is treated as an automatic digital payment, equivalent to bank transfer. Total charges are estimated as monthly charges x tenure.</p>
+</main>
+<footer>Made by <b>Mohd Anas</b></footer>
+<script>
+const M={"b":-0.281111302715841,"num":{"SeniorCitizen":[0.09906479579318692,0.1620518281860135,0.36849834893467875],"Tenure":[-0.7013005250602309,27.88942137025204,16.90499518421995],"MonthlyCharges":[0.11407370850339711,61.74995917642883,27.5711903418005],"TotalCharges":[-0.021531310796659545,1722.01168086617,1377.912314534849],"AvgMonthlySpend":[-0.011585814553292866,61.785967243194776,27.66425779107729],"AddOnCount":[-0.037053208429877034,1.2184948526801562,1.0843083869861567]},"cat":{"Gender":{"Female":-0.07833322529049053,"Male":-0.16903961936870981},"Contract":{"Month-to-month":1.2688502563832758,"One year":-0.11681693565770336,"Two year":-1.3994061653847698},"InternetService":{"DSL":-0.5866689101806604,"Fiber optic":0.4846035407457555,"No":-0.14530747522429818},"OnlineSecurity":{"No":0.12903129149177664,"No internet service":-0.14530747522429818,"Yes":-0.2310966609266791},"OnlineBackup":{"No":-0.16972323942527395,"No internet service":-0.14530747522429818,"Yes":0.06765786999037121},"TechSupport":{"No":0.09518642868278722,"No internet service":-0.14530747522429818,"Yes":-0.19725179811769047},"StreamingTV":{"No":-0.12115631591355785,"No internet service":-0.14530747522429818,"Yes":0.01909094647865724},"PaymentMethod":{"Bank transfer":-0.09296094764198405,"Credit card":-0.17734669428082134,"Electronic check":0.19229031384827827,"Mailed check":-0.1693555165846726},"PaperlessBilling":{"No":-0.08800317079522196,"Yes":-0.15936967386397966}}};
+const $=id=>document.getElementById(id), sig=z=>1/(1+Math.exp(-z));
+const AVG=.32;
+function predict(){
+ const off=$("internet").value==="No",inr=$("cur").value==="₹";
+ $("rl").style.display=inr?"flex":"none";
+ ["sec","backup","support","stream"].forEach(k=>{$(k).disabled=off;if(off)$(k).value="No"});
+ const rate=Math.max(1,+$("rate").value||88),ten=Math.max(0,+$("tenure").value||0),mon=Math.max(0,+$("monthly").value||0)/(inr?rate:1);
+ const ad=k=>off?"No internet service":$(k).value,tot=mon*ten,pay=$("pay").value;
+ const n={SeniorCitizen:+$("senior").value,Tenure:ten,MonthlyCharges:mon,TotalCharges:tot,AvgMonthlySpend:tot/Math.max(ten,1),
+  AddOnCount:["sec","backup","support","stream"].filter(k=>!off&&$(k).value==="Yes").length};
+ const c={Gender:$("gender").value,Contract:$("contract").value,InternetService:$("internet").value,OnlineSecurity:ad("sec"),OnlineBackup:ad("backup"),
+  TechSupport:ad("support"),StreamingTV:ad("stream"),PaymentMethod:pay==="UPI"?"Bank transfer":pay,PaperlessBilling:$("paper").value};
+ let z=M.b;const con={};
+ for(const k in M.num){const[w,m,s]=M.num[k],v=w*(n[k]-m)/s;z+=v;con[k]=v}
+ for(const k in M.cat){const v=M.cat[k][c[k]]||0;z+=v;con[k]=v}
+ c.PaymentMethod=pay;
+ return{p:sig(z),con,c,n};
+}
+const lab={SeniorCitizen:"Senior citizen",Tenure:"Tenure & billing history",MonthlyCharges:"Monthly charges",AddOnCount:"Number of add-ons",Gender:"Gender",Contract:"Contract type",InternetService:"Internet service",OnlineSecurity:"Online security",OnlineBackup:"Online backup",TechSupport:"Tech support",StreamingTV:"Streaming TV",PaymentMethod:"Payment method",PaperlessBilling:"Paperless billing"};
+function why(k,s,r){
+ const c=r.c,n=r.n,sym=$("cur").value,amt=sym+(+$("monthly").value||0).toLocaleString(undefined,{maximumFractionDigits:0});
+ const add=(nm,v)=>v==="Yes"?nm+" is subscribed. Add-on services deepen engagement and make switching providers harder.":v==="No"?(s?nm+" is not subscribed, which means fewer touchpoints with the service and weaker lock-in.":nm+" is not subscribed, but other factors outweigh this."):nm+" does not apply because the customer has no internet service.";
+ switch(k){
+ case"Contract":return c.Contract==="Month-to-month"?"A month-to-month plan carries no commitment, so the customer can leave at any time. This is historically the strongest churn signal.":c.Contract==="Two year"?"A two-year contract locks in the relationship and strongly reduces the likelihood of leaving.":s?"A one-year contract offers only moderate lock-in compared with a two-year plan.":"A one-year contract provides a commitment window that reduces the likelihood of leaving.";
+ case"Tenure":return n.Tenure<12?`Only ${n.Tenure} month(s) with the company. New customers are still evaluating value and churn most often during the first year.`:n.Tenure>=36?`${n.Tenure} months of history signals an established, loyal relationship that is hard to break.`:s?`${n.Tenure} months of tenure, together with billing history, keeps risk above that of long-standing customers.`:`${n.Tenure} months of tenure shows a maturing relationship, which lowers risk.`;
+ case"MonthlyCharges":return s?`A monthly bill of ${amt} raises price sensitivity and the chance the customer shops for cheaper alternatives.`:`A monthly bill of ${amt} keeps price pressure low relative to the typical customer.`;
+ case"InternetService":return c.InternetService==="No"?"Without internet service the customer has a simpler plan with fewer reasons to leave.":s?`${c.InternetService} customers show higher churn in the data, often due to pricing and competition.`:`${c.InternetService} customers show lower churn in the data.`;
+ case"OnlineSecurity":return add("Online security",c.OnlineSecurity);
+ case"OnlineBackup":return add("Online backup",c.OnlineBackup);
+ case"TechSupport":return add("Tech support",c.TechSupport);
+ case"StreamingTV":return add("Streaming TV",c.StreamingTV);
+ case"AddOnCount":return s?`Only ${n.AddOnCount} add-on service(s) means limited product stickiness.`:`${n.AddOnCount} add-on service(s) increase stickiness and make switching harder.`;
+ case"PaymentMethod":return c.PaymentMethod==="Electronic check"?"Electronic-check payers churn more often. Manual payment each cycle creates a recurring moment to reconsider the service.":c.PaymentMethod==="UPI"?"UPI is a convenient digital payment (treated like bank transfer), which reduces payment friction.":s?c.PaymentMethod+" is associated with slightly higher churn in the data.":c.PaymentMethod+" is an automatic or low-friction method, associated with lower churn.";
+ case"PaperlessBilling":return s?"Paperless-billing customers show slightly higher churn, as they receive fewer physical reminders of the service.":"Billing preference slightly reduces risk for this customer.";
+ case"SeniorCitizen":return n.SeniorCitizen?"Senior customers show higher churn in the data, often linked to ease-of-use and support needs.":"Not a senior customer, which is associated with lower churn.";
+ default:return "Minor influence on the prediction.";}
+}
+const strength=a=>a>.6?["Strong","#b4372f"]:a>.25?["Moderate","#c98a14"]:["Slight","#6b7280"];
+function render(){
+ const r=predict(),p=r.p,L=p>=.6?["High risk","var(--hi)","Urgent: contact within 7 days with a personal retention offer."]:p>=.3?["Medium risk","var(--md)","Act within 30 days: a proactive offer or check-in can tip this customer back to safety."]:["Low risk","var(--lo)","Healthy relationship: focus on nurturing and rewarding loyalty."];
+ $("pct").textContent=(p*100).toFixed(1)+"%";$("tag").textContent=L[0];$("tag").style.background=L[1];
+ $("arc").style.stroke=L[1];
+ $("arc").setAttribute("stroke-dasharray",(p*282.7)+" 283");
+ const d=(p-AVG)*100;$("vs").textContent=(d>=0?"+":"")+d.toFixed(1)+" pts";
+ const g={...r.con};g.Tenure+=g.TotalCharges+g.AvgMonthlySpend;delete g.TotalCharges;delete g.AvgMonthlySpend;
+ const all=Object.entries(g).filter(e=>Math.abs(e[1])>.08).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,7);
+ const up=all.filter(e=>e[1]>0).slice(0,3).map(e=>lab[e[0]].toLowerCase()),dn=all.filter(e=>e[1]<0).slice(0,3).map(e=>lab[e[0]].toLowerCase());
+ const j=a=>a.length>1?a.slice(0,-1).join(", ")+" and "+a.slice(-1):a[0];
+ $("sum").innerHTML=`The model estimates a <b>${(p*100).toFixed(1)}%</b> probability that this customer will churn, classified as <b>${L[0].toLowerCase()}</b> (the typical customer is around 32%). `+
+  (up.length?`The main factors <b style="color:var(--hi)">increasing</b> risk are ${j(up)}. `:"No factor is strongly increasing risk. ")+
+  (dn.length?`The main factors <b style="color:var(--lo)">protecting</b> the relationship are ${j(dn)}. `:"")+
+  (p>=.6?"Overall, the risk factors clearly outweigh the protective ones, so retention action should be prioritised.":p>=.3?"Risk and protective factors are fairly balanced, so a timely intervention could shift the outcome.":"Protective factors dominate, so the customer is likely to stay with sustained engagement.");
+ $("why").innerHTML=all.map(([k,v])=>{const s=v>0,st=strength(Math.abs(v));
+  return`<div class="fr"><div class="ic" style="background:${s?"var(--hi)":"var(--lo)"}">${s?"&uarr;":"&darr;"}</div><div><h3>${lab[k]}</h3><p>${why(k,s,r)}</p></div><span class="ch" style="color:${st[1]};border-color:${st[1]}">${st[0]} ${s?"risk":"protection"}</span></div>`}).join("");
+ const A=[],c=r.c,n=r.n;
+ if(c.Contract==="Month-to-month")A.push(["Offer a contract upgrade","Provide a 10-15% discount or a free add-on for moving to a one- or two-year plan."]);
+ if(n.Tenure<12)A.push(["Launch early-life care","Schedule a welcome call within the first 90 days and share tips to get more value from the service."]);
+ if(c.InternetService!=="No"&&(c.OnlineSecurity==="No"||c.TechSupport==="No"))A.push(["Bundle protection add-ons","Offer a free three-month trial of online security and tech support to build stickiness."]);
+ if(c.PaymentMethod==="Electronic check")A.push(["Move to automatic payment","Reward switching to UPI AutoPay, card or bank debit with small cashback."]);
+ if(n.MonthlyCharges>80)A.push(["Right-size the plan","Review actual usage and propose a better-value tier before the customer looks elsewhere."]);
+ if(n.SeniorCitizen)A.push(["Provide assisted support","Offer a dedicated helpline and simplified bills to ease any usability friction."]);
+ if(c.InternetService==="Fiber optic")A.push(["Verify service quality","Proactively check speed and outage history and resolve any open complaints."]);
+ if(!A.length)A.push(["Keep the relationship warm","Send a short satisfaction check-in and thank the customer for their loyalty."]);
+ $("ban").textContent=L[2];
+ $("act").innerHTML=A.slice(0,5).map((a,i)=>`<div class="it"><u>${i+1}</u><div><b>${a[0]}</b><span>${a[1]}</span></div></div>`).join("");
+ const LT=[["Tiered loyalty rewards","Offer points, bill credits or perks that grow with tenure, so staying becomes more valuable each year."],["Proactive check-ins","Reach out quarterly to ask about satisfaction, before any problem turns into a cancellation."],["Personalised offers","Recommend plans and add-ons that match actual usage instead of generic promotions."],["Close the feedback loop","Run short NPS surveys and visibly act on the answers, so customers feel heard."],["Referral programme","Reward customers who bring friends and family, which both attracts customers and deepens commitment."]];
+ $("long").innerHTML=LT.map((a,i)=>`<div class="it"><u>${i+1}</u><div><b>${a[0]}</b><span>${a[1]}</span></div></div>`).join("");
+}
+let prev="$";
+const set=o=>{o.cur="$";for(const k in o)$(k).value=o[k];prev="$";render()};
+$("cur").addEventListener("input",()=>{const r=Math.max(1,+$("rate").value||88),v=+$("monthly").value||0,c=$("cur").value;
+ if(c!==prev){$("monthly").value=+(c==="₹"?v*r:v/r).toFixed(2);prev=c}});
+$("go").onclick=render;
+document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",render));
+$("p1").onclick=()=>set({tenure:3,monthly:90,contract:"Month-to-month",internet:"Fiber optic",sec:"No",backup:"No",support:"No",stream:"Yes",pay:"Electronic check",paper:"Yes",senior:"1"});
+$("p2").onclick=()=>set({tenure:60,monthly:55,contract:"Two year",internet:"DSL",sec:"Yes",backup:"Yes",support:"Yes",stream:"No",pay:"UPI",paper:"No",senior:"0"});
+render();
+</script></body></html>
